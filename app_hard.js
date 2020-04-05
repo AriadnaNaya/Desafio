@@ -1,50 +1,31 @@
 const http = require('http');
-const fs = require('fs');
-const archivo = fs.readFileSync('./movies.json', "utf-8");
-const peliculas = JSON.parse(archivo);
+const respuestas = require ("./response.js")
 
 http.createServer((req, res) => {
 	res.writeHead(200, {'Content-Type': 'text/plain; charset=utf-8'});
-	// Route System
 	switch (req.url) {
-		// Home
 		case '/':
-			let titulo = "Bienvenidos a DH Movies el mejor sitio para encontrar las mejores películas, incluso mucho mejor que Netflix, Cuevana y PopCorn.\n\n";
-			let cantidad = "Total de peliculas en cartelera:" + cantidadDePeliculas(peliculas) + "\n\n";
-			let listado = "";
-			let titulos = peliculas.movies.map(function(obj) {
-				return obj.title;
-			});
-			let ordenadas = titulos.sort();
-			ordenadas.forEach((element) => {
-				listado += element + "\n";
-			});
-			
-			res.end(titulo + cantidad + listado);
+			res.end (respuestas.home.titulo + respuestas.home.totalEnCartelera + respuestas.home.listadoPeliculas + respuestas.home.pieDePagina)
 			break;
-		// En cartelera
 		case '/en-cartelera':
-			res.end('En cartelera');
+			res.end (respuestas.cartelera.titulo + respuestas.cartelera.totalPeliculas + respuestas.cartelera.listaCartelera)
 			break;
 		case '/mas-votadas':
-			res.end('Más Votadas');
+			res.end (respuestas.masVotadas.titulo + respuestas.masVotadas.totalMasVotadas + respuestas.masVotadas.ratingPromedioTotal + respuestas.masVotadas.titulosSubSeccion + respuestas.masVotadas.titulosDePeliculas + respuestas.masVotadas.listadoDePeliculas)
 			break;
 		case '/sucursales':
-			res.end('Sucursales');
+			res.end(respuestas.sucursales.titulo + respuestas.sucursales.totalSalas + respuestas.sucursales.listaSalas);
 			break;
 		case '/contacto':
-			res.end('Contacto');
+			res.end(respuestas.contacto.titulo + respuestas.contacto.contacto);
 			break;
 		case '/preguntas-frecuentes':
-			res.end('Preguntas Frecuentes');
+			res.end(respuestas.preguntasFrecuentes.titulo + respuestas.preguntasFrecuentes.totalPreguntas + respuestas.preguntasFrecuentes.listadoDePreguntas );
 			break;
 		default:
 			res.end('404 not found')
 	}
-	// ¿? 
 }).listen(3030, 'localhost', () => console.log('Server running in 3030 port'));
 
-function cantidadDePeliculas(objeto){
-	return String(objeto.total_movies);
-}
+
 
